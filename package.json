@@ -1,0 +1,21 @@
+{
+  "name": "vidly",
+  "version": "1.0.0",
+  "description": "Imaginary Video Rental Application Backend",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "nodeJs",
+    "backend",
+    "video",
+    "express"
+  ],
+  "author": "Abdulloooh",
+  "license": "ISC",
+  "dependencies": {
+    "@hapi/joi": "^17.1.1",
+    "express": "^4.17.1"
+  }
+}
