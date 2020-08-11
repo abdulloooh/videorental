@@ -1,5 +1,5 @@
 const express = require("express");
-const genres = require("./routes/genre");
+const genres = require("./routes/genres");
 const app = express();
 
 app.use(express.json());
