@@ -25,17 +25,19 @@ router.post("/", async (req, res) => {
     const { error } = validateMovie(data);
     if (error) return res.status(400).send(error.details[0].message);
 
-    let genre = await Genre.find({ _id: data.genre._id });
+    let genre = await Genre.find({ _id: /*data.genre._id*/ data.genreId });
 
     if (!genre || genre.length < 1) {
-      if (data.genre._id) return res.status(400).send("Invalid Genre");
-      else {
-        const { error } = validateGenre(data.genre);
-        if (error) return res.status(400).send(error.details[0].message);
+      return res.status(400).send("Invalid Genre"); //NORMALLY, return straight off
+      //===>  if (data.genre._id) return res.status(400).send("Invalid Genre");
+      //   //this is purely for practice, genre should not be allowed for users to create on the fly
+      //   else {
+      //     const { error } = validateGenre(data.genre);
+      //     if (error) return res.status(400).send(error.details[0].message);
 
-        genre = new Genre({ name: data.genre.name });
-        genre = await genre.save();
-      }
+      //     genre = new Genre({ name: data.genre.name });
+      //     genre = await genre.save();
+      //   }
     }
 
     genre = Array.isArray(genre) ? genre[0] : genre;
@@ -43,7 +45,12 @@ router.post("/", async (req, res) => {
 
     let movie = new Movie({
       title: data.title,
-      genre: genre,
+      genre: {
+        //don't just dump the whole genre, only the needed properties, not all property
+        //Also we do not want the version property from genre
+        _id: genre._id,
+        name: genre.name,
+      },
       numberInStock: data.numberInStock,
       dailyRentalRate: data.dailyRentalRate,
     });
@@ -63,17 +70,19 @@ router.put("/:id", async (req, res) => {
   const { error } = validateMovie(data);
   if (error) return res.status(400).send(error.details[0].message);
 
-  let genre = await Genre.find({ _id: data.genre._id });
+  let genre = await Genre.find({ _id: /*data.genre._id*/ data.genreId });
 
   if (!genre || genre.length < 1) {
-    if (data.genre._id) return res.status(400).send("Invalid Genre");
-    else {
-      const { error } = validateGenre(data.genre);
-      if (error) return res.status(400).send(error.details[0].message);
+    return res.status(400).send("Invalid Genre"); //NORMALLY, return straight off
+    //===>  if (data.genre._id) return res.status(400).send("Invalid Genre");
+    //   //this is purely for practice, genre should not be allowed for users to create on the fly
+    //   else {
+    //     const { error } = validateGenre(data.genre);
+    //     if (error) return res.status(400).send(error.details[0].message);
 
-      genre = new Genre({ name: data.genre.name });
-      genre = await genre.save();
-    }
+    //     genre = new Genre({ name: data.genre.name });
+    //     genre = await genre.save();
+    //   }
   }
 
   genre = Array.isArray(genre) ? genre[0] : genre;
@@ -85,6 +94,12 @@ router.put("/:id", async (req, res) => {
       $set: {
         title: data.title,
         genre: genre,
+        genre: {
+          //don't just dump the whole genre, only the needed properties, not all property
+          //Also we do not want the version property from genre
+          _id: genre._id,
+          name: genre.name,
+        },
         numberInStock: data.numberInStock,
         dailyRentalRate: data.dailyRentalRate,
       },
