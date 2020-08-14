@@ -1,9 +1,12 @@
 const express = require("express");
 const router = express.Router();
+const Fawn = require("fawn");
+const mongoose = require("mongoose");
 const { Rental, validateRental } = require("../models/rental");
 const { Movie } = require("../models/movie");
 const { Customer } = require("../models/customer");
 
+Fawn.init(mongoose);
 router.get("/", async (req, res) => {
   const rentals = await Rental.find().sort("dateOut");
   if (rentals.length < 1) return res.status(204).send("No available rentals");
@@ -25,65 +28,52 @@ router.post("/", async (req, res) => {
     if (error) return res.status(400).send(error.details[0].message);
 
     let customer = await Customer.findById(req.body.customerId);
-    if (!customer) return res.status(404).send("Customer not found");
+    if (!customer) return res.status(400).send("Invalid Customer");
 
-    //decrement numberInStock of Movies by 1
-    //Calculate and update dailyRentalRental rate also if need be
-    let movie = await Movie.findByIdAndUpdate(
-      { _id: req.body.movieId },
-      {
-        $inc: { numberInStock: -1 },
-      },
-      { new: true }
-    );
+    let movie = await Movie.findById(req.body.movieId);
+    if (!movie) return res.status(404).send("Invalid Movie");
 
-    if (!movie) return res.status(404).send("Movie not found");
+    if (movie.numberInStock < 1)
+      return res.status(400).send("Movie out of Stock");
 
     let rental = new Rental({
       customer: {
+        _id: customer._id,
         name: customer.name,
         phone: customer.phone,
         isGold: customer.isGold,
       },
       movie: {
+        _id: movie._id,
         title: movie.title,
+        dailyRentalRate: movie.dailyRentalRate,
       },
-      amount: req.body.amount,
-      numberInStock: movie.numberInStock, //what will remain after
-      dailyRentalRate: movie.dailyRentalRate,
     });
 
     try {
-      rental = await rental.save();
+      new Fawn.Task()
+        .save("rentals", rental)
+        .update("movies", { _id: movie._id }, { $inc: { numberInStock: -25 } })
+        // .remove()
+        .run({ useMongoose: true });
       res.send(rental);
     } catch (ex) {
-      //if this guy fails, increment movie number back
-      movie = await Movie.findByIdAndUpdate(
-        { _id: req.body.movieId },
-        {
-          $inc: { numberInStock: 1 },
-        },
-        { new: true }
-      );
-      return res.status(400).send(ex.message);
+      return res.status(500).send(`Internal error ${ex.message}`); //log the error
     }
   } catch (ex) {
-    console.log(ex.message);
+    console.log(ex.message); //internal error, log it!
     return res.end();
   }
 });
 
 router.put("/:id", async (req, res) => {
-  // amount, dateToReturn, numberInStock
   const { error } = validateRental(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
   let rental = await Rental.findById(req.params.id);
-  if (!rental) return res.status(404).send("Data not available");
+  if (!rental) return res.status(400).send("Invalid Rental");
 
-  rental.amount = req.body.amount;
   rental.dateToReturn = req.body.dateToReturn;
-  rental.numberInStock = req.body.numberInStock;
 
   rental = await rental.save();
 

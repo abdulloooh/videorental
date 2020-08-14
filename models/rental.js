@@ -15,27 +15,24 @@ const rentalSchema = new mongoose.Schema({
       required: true,
       trim: true,
     },
+    dailyRentalRate: { type: Number, required: true, min: 0, max: 100 },
   }),
   dateOut: { type: Date, default: Date.now() },
   dateToReturn: {
     type: Date,
     default: new Date().setDate(new Date().getDate() + 5),
   },
-  amount: { type: Number, required: true, min: 0, max: 1000000 },
-  numberInStock: { type: Number, required: true, min: 0, max: 1000000 },
-  dailyRentalRate: { type: Number, min: 0, max: 100 },
+  dateReturned: Date,
+  rentalFee: { type: Number, min: 0 },
 });
 
 const Rental = mongoose.model("Rental", rentalSchema);
 
 function validateRental(rental) {
   const schema = Joi.object({
-    customerId: Joi.string(),
-    movieId: Joi.string(),
-    amount: Joi.number().required(),
-    dateOut: Joi.date(),
+    customerId: Joi.string().required(),
+    movieId: Joi.string().required(),
     dateToReturn: Joi.date(),
-    numberInStock: Joi.number().min(1).max(1000000),
   });
 
   return schema.validate(rental);
