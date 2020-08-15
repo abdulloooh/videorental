@@ -18,7 +18,7 @@ function validateUser(user) {
   const schema = Joi.object({
     name: Joi.string().min(3).max(100).required(),
     email: Joi.string().min(5).max(100).email(),
-    password: Joi.string().min(8).max(255),
+    password: Joi.string().min(8).max(255).required(),
   });
   return schema.validate(user);
 }
