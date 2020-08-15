@@ -1,3 +1,5 @@
+const config = require("config");
+const jwt = require("jsonwebtoken");
 const Joi = require("@hapi/joi");
 const bcrypt = require("bcrypt");
 const _ = require("lodash");
@@ -21,18 +23,23 @@ router.post("/", async (req, res) => {
     if (!validPassword)
       return res.status(400).send("Invalid user email or password");
 
-    res.send(_.pick(user, ["_id", "name", "email"]));
+    const token = jwt.sign(
+      { _id: user._id },
+      config.get("vidly_jwtPrivateKey")
+    );
+
+    res.send(token);
   } catch (ex) {
     console.log(ex.message);
   }
 });
 
-router.delete("/:id", async (req, res) => {
-  const user = await User.findByIdAndDelete(req.params.id);
-  if (!user) return res.status(404).send("User not found");
+// router.delete("/:id", async (req, res) => {
+//   const user = await User.findByIdAndDelete(req.params.id);
+//   if (!user) return res.status(404).send("User not found");
 
-  res.send(user);
-});
+//   res.send(user);
+// });
 
 function validate(user) {
   const schema = Joi.object({
