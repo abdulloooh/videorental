@@ -25,7 +25,7 @@ router.post("/", async (req, res) => {
     name: req.body.name,
     phone: req.body.phone,
   });
-  customer = await customer.save(); //not more needed since _id is generated while creating and not returned by mongodb
+  // customer = await customer.save(); //not more needed since _id is generated while creating and not returned by mongodb
   await customer.save();
 
   res.send(customer);
