@@ -1,5 +1,3 @@
-const config = require("config");
-const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const _ = require("lodash");
 const express = require("express");
@@ -35,11 +33,7 @@ router.post("/", async (req, res) => {
     await user.save();
 
     // res.send(_.pick(user, ["_id", "name", "email"]));
-    const token = jwt.sign(
-      { _id: user._id },
-      config.get("vidly_jwtPrivateKey")
-    );
-
+    const token = user.generateJwtToken();
     res.send(token);
   } catch (ex) {
     console.log(ex.message);

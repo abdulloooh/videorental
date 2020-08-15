@@ -23,11 +23,7 @@ router.post("/", async (req, res) => {
     if (!validPassword)
       return res.status(400).send("Invalid user email or password");
 
-    const token = jwt.sign(
-      { _id: user._id },
-      config.get("vidly_jwtPrivateKey")
-    );
-
+    const token = user.generateJwtToken();
     res.send(token);
   } catch (ex) {
     console.log(ex.message);

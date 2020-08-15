@@ -1,3 +1,5 @@
+const config = require("config");
+const jwt = require("jsonwebtoken");
 const Joi = require("@hapi/joi");
 const mongoose = require("mongoose");
 // const passwordComplexity = require("joi-password-complexity");
@@ -12,6 +14,13 @@ const userSchema = new mongoose.Schema({
   },
   password: { type: String, minlength: 7, maxlength: 255, required: true },
 });
+
+userSchema.methods.generateJwtToken = function () {
+  //Arrow fcn should not be used here since we need ==this== keyword
+  //and generally, arrow fcn is used as standalone fcn when ==this== is needed
+  //not as a method in an object because arrow function do not have its own ==this==
+  return jwt.sign({ _id: this._id }, config.get("vidly_jwtPrivateKey"));
+};
 
 const User = mongoose.model("User", userSchema);
 
