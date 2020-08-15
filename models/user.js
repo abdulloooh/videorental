@@ -1,6 +1,6 @@
 const Joi = require("@hapi/joi");
 const mongoose = require("mongoose");
-const passwordComplexity = require("joi-password-complexity");
+// const passwordComplexity = require("joi-password-complexity");
 
 const userSchema = new mongoose.Schema({
   name: { type: String, minlength: 3, maxlength: 100, required: true },
@@ -16,18 +16,18 @@ const userSchema = new mongoose.Schema({
 const User = mongoose.model("User", userSchema);
 
 function validateUser(user) {
-  const complexityOptions = {
-    min: 3,
-    max: 30,
-    lowerCase: 1,
-    upperCase: 0,
-    // numeric: 1,
-    // symbol: 1,
-    // requirementCount: 4,
-  };
+  // const complexityOptions = {
+  //   min: 3,
+  //   max: 30,
+  //   lowerCase: 1,
+  //   upperCase: 0,
+  //   // numeric: 1,
+  //   // symbol: 1,
+  //   // requirementCount: 4,
+  // };
 
-  a = passwordComplexity(complexityOptions).validate("user.password");
-  console.log(a.error.details[0].message);
+  // a = passwordComplexity(complexityOptions).validate("user.password");
+  // console.log(a.error.details[0].message);
 
   const schema = Joi.object({
     name: Joi.string().min(3).max(100).required(),

@@ -1,3 +1,4 @@
+const bcrypt = require("bcrypt");
 const _ = require("lodash");
 const express = require("express");
 const router = express.Router();
@@ -25,6 +26,10 @@ router.post("/", async (req, res) => {
     if (user) return res.status(400).send("User already registered");
 
     user = new User(_.pick(req.body, ["name", "email", "password"]));
+
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(user.password, salt);
+
     await user.save();
 
     res.send(_.pick(user, ["_id", "name", "email"]));
@@ -33,19 +38,19 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.put("/:id", async (req, res) => {
-  const { error } = validateUser(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+// router.put("/:id", async (req, res) => {
+//   const { error } = validateUser(req.body);
+//   if (error) return res.status(400).send(error.details[0].message);
 
-  const user = await User.findByIdAndUpdate(
-    req.params.id,
-    _.pick(req.body, ["_id", "name", "email", password]),
-    { new: true }
-  );
-  if (!user) return res.status(404).send("User not found");
+//   const user = await User.findByIdAndUpdate(
+//     req.params.id,
+//     _.pick(req.body, ["_id", "name", "email", password]),
+//     { new: true }
+//   );
+//   if (!user) return res.status(404).send("User not found");
 
-  res.send(_.pick(user, ["name", "email"]));
-});
+//   res.send(_.pick(user, ["name", "email"]));
+// });
 
 router.delete("/:id", async (req, res) => {
   const user = await User.findByIdAndDelete(req.params.id);
