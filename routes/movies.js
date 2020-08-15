@@ -43,7 +43,7 @@ router.post("/", async (req, res) => {
     genre = Array.isArray(genre) ? genre[0] : genre;
     //it sometimes try to save as array and get rejected mostly cos I first fetched it from database
 
-    let movie = new Movie({
+    const movie = new Movie({
       title: data.title,
       genre: {
         //don't just dump the whole genre, only the needed properties, not all property
@@ -55,7 +55,8 @@ router.post("/", async (req, res) => {
       dailyRentalRate: data.dailyRentalRate,
     });
 
-    movie = await movie.save();
+    // movie = await movie.save();
+    await movie.save();
 
     res.send(movie);
   } catch (ex) {

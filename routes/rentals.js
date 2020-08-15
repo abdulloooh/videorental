@@ -7,6 +7,7 @@ const { Movie } = require("../models/movie");
 const { Customer } = require("../models/customer");
 
 Fawn.init(mongoose);
+
 router.get("/", async (req, res) => {
   const rentals = await Rental.find().sort("dateOut");
   if (rentals.length < 1) return res.status(204).send("No available rentals");
@@ -36,7 +37,7 @@ router.post("/", async (req, res) => {
     if (movie.numberInStock < 1)
       return res.status(400).send("Movie out of Stock");
 
-    let rental = new Rental({
+    const rental = new Rental({
       customer: {
         _id: customer._id,
         name: customer.name,
