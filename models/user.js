@@ -13,13 +13,22 @@ const userSchema = new mongoose.Schema({
     unique: true,
   },
   password: { type: String, minlength: 7, maxlength: 255, required: true },
+  // isAdmin:Boolean,
+  //roles[] eg isAdmin, isRegular, isManagement, isDev
+  //operations[] eg canDeleteGenre, canViewUserAmount, canUpgradeUser
+  role: {
+    isAdmin: Boolean,
+  },
 });
 
 userSchema.methods.generateJwtToken = function () {
   //Arrow fcn should not be used here since we need ==this== keyword
   //and generally, arrow fcn is used as standalone fcn when ==this== is needed
   //not as a method in an object because arrow function do not have its own ==this==
-  return jwt.sign({ _id: this._id }, config.get("vidly_jwtPrivateKey"));
+  return jwt.sign(
+    { _id: this._id, isAdmin: this.role.isAdmin },
+    config.get("vidly_jwtPrivateKey")
+  );
 };
 
 const User = mongoose.model("User", userSchema);
