@@ -2,17 +2,18 @@ const bcrypt = require("bcrypt");
 const _ = require("lodash");
 const express = require("express");
 const router = express.Router();
+const auth = require("../middlewares/auth");
 const { User, validateUser } = require("../models/user");
 
-router.get("/", async (req, res) => {
-  const users = await User.find().sort("name");
+// router.get("/", async (req, res) => {
+//   const users = await User.find().sort("name");
 
-  res.send(users);
-});
+//   res.send(users);
+// });   //probably routes available for admin users
 
-router.get("/:id", async (req, res) => {
-  const user = await User.find({ _id: req.params.id });
-  if (!user || user.length < 1) return res.status(404).send("User not found");
+router.get("/me", auth, async (req, res) => {
+  const user = await User.findById(req.user._id).select("-password");
+  // if (!user || user.length < 1) return res.status(404).send("User not found");
 
   res.send(user);
 });
