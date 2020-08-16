@@ -32,9 +32,10 @@ router.post("/", async (req, res) => {
 
     await user.save();
 
-    // res.send(_.pick(user, ["_id", "name", "email"]));
     const token = user.generateJwtToken();
-    res.send(token);
+    res
+      .header("x-auth-token", token)
+      .send(_.pick(user, ["_id", "name", "email"]));
   } catch (ex) {
     console.log(ex.message);
   }
