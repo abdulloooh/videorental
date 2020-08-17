@@ -1,7 +1,9 @@
+require("express-async-errors");
 const express = require("express");
 const router = express.Router();
 const auth = require("../middlewares/auth");
 const admin = require("../middlewares/admin");
+// const asyncMiddleWare = require("../middlewares/async");
 const { Genre, validate } = require("../models/genre");
 
 // router.use(auth);

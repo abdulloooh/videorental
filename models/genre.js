@@ -1,9 +1,12 @@
 const mongoose = require("mongoose");
 const Joi = require("@hapi/joi");
 
-const genreSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-});
+const genreSchema = new mongoose.Schema(
+  {
+    name: { type: String, required: true },
+  },
+  { bufferCommands: false }
+);
 
 const Genre = mongoose.model("genre", genreSchema);
 
