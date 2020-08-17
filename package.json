@@ -25,6 +25,7 @@
     "joi-password-complexity": "^4.2.0",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.20",
-    "mongoose": "^5.9.28"
+    "mongoose": "^5.9.28",
+    "winston": "^3.3.3"
   }
 }
