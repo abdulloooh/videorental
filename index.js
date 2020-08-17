@@ -1,4 +1,5 @@
 const winston = require("winston");
+require("winston-mongodb");
 const express = require("express");
 const app = express();
 const config = require("config");
@@ -33,6 +34,10 @@ winston.configure({
   transports: [
     new winston.transports.File({ filename: "error.log", level: "error" }),
     new winston.transports.File({ filename: "combined.log", level: "info" }),
+    new winston.transports.MongoDB({
+      db: "mongodb://localhost/vidly",
+      level: "info",
+    }),
   ],
 });
 
