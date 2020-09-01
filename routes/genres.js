@@ -4,6 +4,7 @@ const auth = require("../middlewares/auth");
 const admin = require("../middlewares/admin");
 // const asyncMiddleWare = require("../middlewares/async");
 const { Genre, validate } = require("../models/genre");
+const admin = require("../middlewares/admin");
 
 // router.use(auth);
 
@@ -21,7 +22,7 @@ router.get("/:id", async (req, res) => {
   res.send(genre);
 });
 
-router.post("/", auth, async (req, res) => {
+router.post("/", auth, admin, async (req, res) => {
   const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
