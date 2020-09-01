@@ -12,6 +12,9 @@ module.exports = function (app) {
   if (!config.get("vidly_jwtPrivateKey")) {
     throw new Error("FATAL ERROR: jwt private key not defined");
   }
+  if (!config.get("db_conn")) {
+    throw new Error("FATAL ERROR: Mongodb Url not supplied");
+  }
 
   //   throw new Error("POPL");
   //   Promise.reject(new Error("er"));

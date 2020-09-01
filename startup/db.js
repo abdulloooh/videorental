@@ -1,8 +1,9 @@
 const mongoose = require("mongoose");
+const config = require("config");
 
 module.exports = function (winston) {
   mongoose
-    .connect("mongodb://localhost/vidly", {
+    .connect(config.get("db_conn"), {
       // poolSize: 10,
       // bufferMaxEntries: 0,
       reconnectTries: 5000,
