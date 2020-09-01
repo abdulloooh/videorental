@@ -4,7 +4,6 @@ const auth = require("../middlewares/auth");
 const admin = require("../middlewares/admin");
 // const asyncMiddleWare = require("../middlewares/async");
 const { Genre, validate } = require("../models/genre");
-const admin = require("../middlewares/admin");
 
 // router.use(auth);
 
