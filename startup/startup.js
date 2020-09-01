@@ -7,6 +7,7 @@ module.exports = function (app) {
   require("./logging")(winston);
   require("../startup/db")(winston);
   require("../startup/routes")(app);
+  require("../startup/prod")(app);
 
   if (!config.get("vidly_jwtPrivateKey")) {
     throw new Error("FATAL ERROR: jwt private key not defined");
